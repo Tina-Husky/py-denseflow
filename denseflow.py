@@ -73,14 +73,14 @@ def dense_flow(augs):
     #     print 'Could not initialize capturing! ', video_name
     #     exit()
     try:
-        videocapture=skvideo.io.vread(video_path)
+        videocapture=skvideo.io.vread(video_path+'.avi')
     except:
-        print '{} read error! '.format(video_name)
+        print('video_path: {}, {} read error! '.format(video_path, video_name))
         return 0
-    print video_name
+    print(video_name)
     # if extract nothing, exit!
     if videocapture.sum()==0:
-        print 'Could not initialize capturing',video_name
+        print('Could not initialize capturing',video_name)
         exit()
     len_frame=len(videocapture)
     frame_num=0
@@ -139,8 +139,8 @@ def get_video_list():
 
 def parse_args():
     parser = argparse.ArgumentParser(description="densely extract the video frames and optical flows")
-    parser.add_argument('--dataset',default='ucf101',type=str,help='set the dataset name, to find the data path')
-    parser.add_argument('--data_root',default='/n/zqj/video_classification/data',type=str)
+    parser.add_argument('--dataset',default='UCF-101',type=str,help='set the dataset name, to find the data path')
+    parser.add_argument('--data_root',default='/mnt/lustre/tianyating/videoDatasets',type=str)
     parser.add_argument('--new_dir',default='flows',type=str)
     parser.add_argument('--num_workers',default=4,type=int,help='num of workers to act multi-process')
     parser.add_argument('--step',default=1,type=int,help='gap frames')
@@ -160,7 +160,7 @@ if __name__ =='__main__':
 
     args=parse_args()
     data_root=os.path.join(args.data_root,args.dataset)
-    videos_root=os.path.join(data_root,'videos')
+    videos_root=data_root
 
     #specify the augments
     num_workers=args.num_workers
@@ -175,9 +175,10 @@ if __name__ =='__main__':
     video_list=video_list[s_:e_]
 
     len_videos=min(e_-s_,13320-s_) # if we choose the ucf101
-    print 'find {} videos.'.format(len_videos)
+    print('find {} videos.'.format(len_videos))
+    print(video_list)
     flows_dirs=[video.split('.')[0] for video in video_list]
-    print 'get videos list done! '
+    print('get videos list done! ')
 
     pool=Pool(num_workers)
     if mode=='run':
